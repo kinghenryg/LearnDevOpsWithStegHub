@@ -1,13 +1,12 @@
-## WEB STACK IMPLEMENTATION (LEMP STACK) IN AWS
+## Web Stack Implementation (LEMP Stack) on AWS
 
 ### Introduction:
 
-__The LEMP stack is a popular open-source web development platform that consists of four main components: Linux, Nginx, MySQL, and PHP (or sometimes Perl or Python). This documentation outlines the setup, configuration, and usage of the LEMP stack.__
-
+__The LEMP stack is a widely used open-source web development platform comprising four key components: Linux, Nginx, MySQL, and PHP (or occasionally Perl or Python). This document provides a detailed guide on the setup, configuration, and usage of the LEMP stack.__
 
 ## Step 0: Prerequisites
 
-__1.__ EC2 Instance of t2.micro type and Ubuntu 24.04 LTS (HVM) was lunched in the us-east-1 region using the AWS console.
+__1.__ A t2.micro EC2 instance running Ubuntu 24.04 LTS (HVM) was launched in the us-east-1 region using the AWS management console.
 
 ![Lunch Instance](./images/create-ec2.png)
 ![Lunch Instance](./images/ec2-detail.png)
@@ -27,15 +26,13 @@ __4.__ The default VPC and Subnet was used for the networking configuration.
 ![Default Network](./images/default-network.png)
 
 __5.__ The private ssh key that got downloaded was located, permission was changed for the private key file and then used to connect to the instance by running
+
 ```
-chmod 400 my-ec2-key.pem
-```
-```
-ssh -i "my-ec2-key.pem" ubuntu@18.209.18.61
+ssh -i "henrylearndevops.pem" ubuntu@ec2-13-53-214-3.eu-north-1.compute.amazonaws.com
 ```
 Where __username=ubuntu__ and __public ip address=18.209.18.61__
 
-![Connect to instance](./images/ssh-access.png)
+![Connect to instance](./images/ssh-access_gitbash.png)
 
 
 ## Step 1 - Install nginx web server
@@ -46,13 +43,12 @@ __1.__ __Update and upgrade the server’s package index__
 sudo apt update
 sudo apt upgrade -y
 ```
-![Update Packages](./images/update-ec2.png)
-![Upgrade Packages](./images/upgrade-ec2.png)
+![Update_Upgrade Packages](./images/update-upgrade-ec2.png)
 
 __2.__ __Install nginx__
 
 ```
-sudo apt install nginx -y
+sudo apt install nginx -
 ```
 ![Instal Nginx](./images/install-nginx.png)
 
