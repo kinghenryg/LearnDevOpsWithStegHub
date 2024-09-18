@@ -109,6 +109,11 @@ Below are example screenshots illustrating SQL commands and their outputs:
 
 3. **Table Creation and Structure:**
    ![Table Creation Example](LEMP_STACK/images/table-creation.png)
+   
+4. **Drop Table Operation:**
+   ![Drop Table Example](LEMP_STACK/images/drop_table.png)   
+   
+   
 
 ## Conclusion
 
