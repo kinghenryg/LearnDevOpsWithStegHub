@@ -2,195 +2,204 @@
 
 ### Introduction:
 
-__The LEMP stack is a widely used open-source web development platform comprising four key components: Linux, Nginx, MySQL, and PHP (or occasionally Perl or Python). This document provides a detailed guide on the setup, configuration, and usage of the LEMP stack.__
+__The LEMP stack is a popular open-source web development platform consisting of four main components: Linux, Nginx, MySQL, and PHP (or occasionally Perl or Python). This document provides a detailed guide for setting up, configuring, and using the LEMP stack.__
 
 ## Step 0: Prerequisites
 
-__1.__ A t2.micro EC2 instance running Ubuntu 24.04 LTS (HVM) was launched in the us-east-1 region using the AWS management console.
+__1.__ A t2.micro EC2 instance with Ubuntu 24.04 LTS (HVM) was launched in the eu-north-1 region using the AWS Management Console.
 
-![Lunch Instance](./images/create-ec2.png)
-![Lunch Instance](./images/ec2-detail.png)
+![Launch Instance](./images/create-ec2.png)
+![Instance Details](./images/ec2-detail.png)
 
-__2.__ Created SSH key pair named __my-ec2-key__ to access the instance on port 22
+__2.__ An SSH key pair named __henrylearndevops__ was created to access the instance via port 22.
 
 __3.__ The security group was configured with the following inbound rules:
 
-- Allow traffic on port 80 (HTTP) with source from anywhere on the internet.
-- Allow traffic on port 443 (HTTPS) with source from anywhere on the internet.
-- Allow traffic on port 22 (SSH) with source from any IP address. This is opened by default.
+- Allow HTTP traffic on port 80 from anywhere on the internet.
+- Allow HTTPS traffic on port 443 from anywhere on the internet.
+- Allow SSH traffic on port 22 from any IP address (default setting).
 
 ![Security Rules](./images/security-rule.png)
 
-__4.__ The default VPC and Subnet was used for the networking configuration.
+__4.__ After downloading the private SSH key, GitBash was used to connect to the instance, using the following command:
 
-![Default Network](./images/default-network.png)
-
-__5.__ The private ssh key that got downloaded was located, permission was changed for the private key file and then used to connect to the instance by running
-
-```
+```bash
 ssh -i "henrylearndevops.pem" ubuntu@ec2-13-53-214-3.eu-north-1.compute.amazonaws.com
 ```
-Where __username=ubuntu__ and __public ip address=18.209.18.61__
 
-![Connect to instance](./images/ssh-access_gitbash.png)
+In this command, __username=ubuntu__ and __public IP address=ec2-13-53-214-3.eu-north-1.compute.amazonaws.com__.
+
+![Connect to Instance](./images/ssh-access_gitbash.png)
 
 
-## Step 1 - Install nginx web server
+## Step 1 - Install Nginx Web Server
 
-__1.__ __Update and upgrade the server’s package index__
+__1.__ **Update and upgrade the server’s package index:**
 
-```
+```bash
 sudo apt update
 sudo apt upgrade -y
 ```
 ![Update_Upgrade Packages](./images/update-upgrade-ec2.png)
 
-__2.__ __Install nginx__
+__2.__ **Install Nginx:**
 
-```
+```bash
 sudo apt install nginx -
 ```
-![Instal Nginx](./images/install-nginx.png)
+![Install Nginx](./images/install-nginx.png)
 
-__3.__ __Verify that nginx is active and running__
+__3.__ **Verify Nginx is active and running:**
 
-```
+```bash
 sudo systemctl status nginx
 ```
-If it's green and running, then nginx is correctly installed
+If the status is green and running, Nginx has been successfully installed.
 ![Nginx Status](./images/nginx-status.png)
 
-__4.__ __Access nginx locally on the Ubuntu shell__
+__4.__ **Access Nginx locally via the Ubuntu shell:**
 
+```bash
+curl http://127.0.0.1:80 
 ```
-curl http://127.0.0.1:80
+or
+```bash
+curl http://localhost
 ```
 ![Local URL](./images/curl-access.png)
 
-__5.__ __Test with the public IP address if the Nginx server can respond to request from the internet using the url on a browser.__
+__5.__ **Test Nginx with the public IP address in a browser:**
 
-```
-http://18.209.18.61:80
+```bash
+http://13.53.214.3
 ```
 ![Nginx Default Page](./images/nginx-default.png)
 
-This shows that the web server is correctly installed and it is accessible throuhg the firewall.
+This confirms that the web server is installed correctly and accessible through the firewall.
 
-__6.__ __Another way to retrieve the public ip address other than check the aws console__
+__6.__ **Retrieve the public IP address (alternative to checking the AWS console):**
 
-```
+```bash
 curl -s http://169.254.169.254/latest/meta-data/public-ipv4
 ```
-The above command, gave an error __401 - Unauthorized__.
-![Unauthorized Error-401](./images/curl-401-unauthorized.png)
+The command initially provided no response.
+![No Response](./images/noresponse.png)
 
-The error "401 - unauthorized" was troubleshooted by making the following navigations from the ec2 instance page on the AWS console:
+__Troubleshooting:__
+To resolve this, modify the instance's metadata options in the AWS console:
+- Navigate to: Actions > Instance Settings > Modify instance metadata options.
+- Change the __IMDSv2__ setting from __Required__ to __Optional__.
 
-- Actions > Instance Settings > Modify instance metadata options.
+![IMDS Option](./images/imds-setting.png)
 
-- Then change the __IMDSv2__ from __Required__ to __Optional__.
+Once updated, re-run the command, and the public IP address should be displayed:
 
-![imds option](./images/imds-setting.png)
-
-The command was run again, this time there was no error and the public IP address displayed.
-
-```
+```bash
 curl -s http://169.254.169.254/latest/meta-data/public-ipv4
 ```
-![Public IP with curl](./images/curl-authorized.png)
+![Public IP with curl](./images/curlwithresponse.png)
 
 
 ## Step 2 - Install MySQL
 
-__1.__ __Install a relational database (RDB)__
+__1.__ **Install a relational database (RDB):**
 
-MySQL was installed in this project. It is a popular relational database management system used within PHP environments.
-```
+In this project, MySQL was installed. It is a widely used relational database management system within PHP environments.
+
+```bash
 sudo apt install mysql-server
 ```
 ![Install MySQL](./images/install-mysql.png)
 
-__2.__ __Log in to mysql console__
-```
+__2.__ **Log in to the MySQL console:**
+
+```bash
 sudo mysql
 ```
-This connects to the MySQL server as the administrative database user __root__ infered by the use of __sudo__ when running the command.
+This command connects to the MySQL server as the administrative user __root__, which is inferred by using `sudo`.
 
-![MySQL console](./images/mysql-shell.png)
+![MySQL Console](./images/mysql-shell.png)
 
-__3.__ __Set a password for root user using mysql_native_password as default authentication method.__
+__3.__ **Set a password for the root user using `mysql_native_password` as the default authentication method:**
 
-Here, the user's password was defined as "Admin123$"
+In this case, the root user password was set to "Passw0rd.1".
 
+```bash
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Passw0rd.1';
 ```
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Admin123$';
-```
-![Root password](./images/root-password.png)
+![Root Password](./images/root-password.png)
 
-Exit the MySQL shell
-```
+Exit the MySQL shell:
+
+```bash
 exit
 ```
 
-__4.__ __Run an Interactive script to secure MySQL__
+__4.__ **Run an interactive script to secure MySQL:**
 
-The security script comes pre-installed with mysql. This script removes some insecure settings and lock down access to the database system.
-```
+The security script, which comes pre-installed with MySQL, removes insecure settings and locks down access to the database system.
+
+```bash
 sudo mysql_secure_installation
 ```
-![Change root password](./images/secure-mysql.png)
+![Secure MySQL](./images/secure-mysql.png)
 
-__5.__ __After changing root user password, log in to MySQL console.__
+__5.__ **After securing the MySQL installation, log in to the MySQL console with the root user:**
 
-A command prompt for password was noticed after running the command below.
-```
-sudo mysql -p
-```
-![MySQL login with password](./images/mysql-console.png)
+A password prompt will appear after executing the command below:
 
-Exit MySQL shell
+```bash
+sudo mysql -u root -p
 ```
+![MySQL Login with Password](./images/mysql-console.png)
+
+Exit the MySQL shell:
+
+```bash
 exit
-```
+``` 
 
 ## Step 3 - Install PHP
 
 __1.__ __Install php__
 
-Install php-fpm (PHP fastCGI process manager) and tell nginx to pass PHP requests to this software for processing. Also, install php-mysql, a php module that allows PHP to communicate with MySQL-based databases. Core PHP packages will automatically be installed as dependencies.
+Install PHP FastCGI Process Manager (PHP-FPM) and configure Nginx to route PHP requests to it for processing. Additionally, install the PHP-MySQL module, enabling PHP to interact with MySQL-based databases. Core PHP packages will be automatically installed as dependencies.
 
-The following were installed:
+The following components were installed:
 - php-fpm (PHP fastCGI process manager)
 - php-mysql
 
 ```
-sudo apt install php-fpm php-mysql -y
+sudo apt install php-fpm php-mysql
 ```
+
+Respond with "y" when prompted.
 ![Install PHP](./images/install-php.png)
 
 
-## Step 4 - Configure nginx to use PHP processor
 
-__1.__ __Create a root web directory for your_domain__
+## Step 4 - Configure Nginx to Use the PHP Processor
+
+__1.__ __Create the web root directory for your project.__
 
 ```
 sudo mkdir /var/www/projectLEMP
 ```
 ![Web root dir](./images/mkdir-root-dir.png)
 
-__2.__ __Assign the directory ownership with $USER which will reference the current system user__
+__2.__ __Assign ownership of this directory to the current system user.__
 
 ```
 sudo chown -R $USER:$USER /var/www/projectLEMP
 ```
 ![Change owner](./images/change-owner.png)
 
-__3.__ __Create a new configuration file in Nginx’s “sites-available” directory__.
+__3.__ __Create a new Nginx configuration file in the “sites-available” directory.__
 
 ```
 sudo nano /etc/nginx/sites-available/projectLEMP
 ```
-Paste in the following bare-bones configuration:
+Insert the following configuration:
 
 ```
 server {
@@ -217,190 +226,185 @@ server {
 
 ![Nginx config](./images/nginx-config.png)
 
-### Here’s what each directives and location blocks does:
+### Explanation of the Directives:
 
-- __listen__ - Defines what port nginx listens on. In this case it will listen on port 80, the default port for HTTP.
+- __listen__ - Defines the port Nginx listens on, typically port 80 for HTTP.
+- __root__ - Specifies the document root directory for serving files.
+- __index__ - Sets the priority order for index files, with index.html taking precedence over index.php.
+- __server_name__ - Specifies the domain or IP address for which this configuration is valid.
+- __location /__ - Checks for matching files or directories, returning a 404 error if none is found.
+- __location ~ \.php$__ - Handles PHP file processing using the PHP-FPM service.
+- __location ~ /\.ht__ - Denies access to `.htaccess` files for security reasons.
 
-- __root__ - Defines the document root where the files served by this website are stored.
+These directives control how Nginx processes requests and handles PHP files.
 
-- __index__ - Defines in which order Nginx will prioritize the index files for this website. It is a common practice to list index.html files with a higher precedence than index.php files to allow for quickly setting up a maintenance landing page for PHP applications. You can adjust these settings to better suit your application needs.
-
-- __server_name__ - Defines which domain name and/or IP addresses the server block should respond for. Point this directive to your domain name or public IP address.
-
-- __location /__ - The first location block includes the try_files directive, which checks for the existence of files or directories matching a URI request. If Nginx cannot find the appropriate result, it will return a 404 error.
-
-- __location ~ \.php$__ - This location handles the actual PHP processing by pointing Nginx to the fastcgi-php.conf configuration file and the php7.4-fpm.sock file, which declares what socket is associated with php-fpm.
-
-- __location ~ /\.ht__ - The last location block deals with .htaccess files, which Nginx does not process. By adding the deny all directive, if any .htaccess files happen to find their way into the document root, they will not be served to visitors.
-
-__4.__ __Activate the configuration by linking to the config file from Nginx’s sites-enabled directory__
+__4.__ __Activate the configuration by creating a symbolic link to the sites-enabled directory.__
 
 ```
 sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled/
 ```
 ![Link config](./images/sys-link.png)
-This will tell Nginx to use this configuration when next it is reloaded.
 
-__5.__ __Test the configuration for syntax error__
+This command tells Nginx to use the new configuration upon reload.
+
+__5.__ __Test the configuration for syntax errors.__
 
 ```
 sudo nginx -t
 ```
 ![Test syntax](./images/test-syntax.png)
 
-__6.__ __Disable the default Nginx host that currently configured to listen on port 80__
+__6.__ __Disable the default Nginx site that is currently listening on port 80.__
 
 ```
 sudo unlink /etc/nginx/sites-enabled/default
 ```
 ![Disable nginx default](./images/disable-default-nginx.png)
 
-__7.__ __Reload Nginx to apply the changes__
+__7.__ __Reload Nginx to apply the changes.__
+
 ```
 sudo systemctl reload nginx
 ```
 ![Reload nginx](./images/reload-nginx.png)
 
-__8.__ __The new website is now active but the web root /var/www/projectLEMP is still empty. Create an index.html file in this location so to test the virtual host work as expected.__
+__8.__ __Create a temporary index.html file to test if the virtual host works.__
 
 ```
 sudo echo ‘Hello LEMP from hostname’ $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) ‘with public IP’ $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectLEMP/index.html
 ```
 ![Site content](./images/site-content.png)
 
-#### Open the website on a browser using IP address
+#### Open the website in a browser using your IP address:
 ```
-http://18.209.18.61:80
+http://13.53.214.3
 ```
-![Site with ip-address](./images/site-IP.png)
+![Site IP](./images/site-IP.png)
 
-#### Open it with public dns name (port is optional)
-```
-http://<public-DNS-name>:80
-```
-![Site with dns name](./images/site-dns.png)
+You can use this as a temporary landing page until you set up the `index.php` file. Afterward, remove or rename the `index.html` file to ensure the `index.php` file is used by default.
 
-
-This file can be left in place as a temporary landing page for the application until an index.php file is set up to replace it. Once this is done, remove or rename the index.html file from the document root as it will take precedence over index.php file by default.
-
-The LEMP stack is now fully configured.
-At this point, the LEMP stack is completely installed and fully operational.
-
+The LEMP stack is now fully configured and ready for use.
 
 ## Step 5 - Test PHP with Nginx
 
-Test the LEMP stack to validate that Nginx can handle the .php files off to the PHP processor.
+To verify the LEMP stack, check whether Nginx can correctly process `.php` files.
 
-__1.__ __Create a test PHP file in the document root. Open a new file called info.php within the document root.__
+__1.__ __Create a test PHP file in the document root.__
 
 ```
 sudo nano /var/www/projectLEMP/info.php
 ```
-Past in:
+Insert the following code:
 ```
 <?php
 phpinfo();
+?>
 ```
-__2.__ __Access the page on the browser and attach /info.php__
+
+![PHP Info](./images/php-info.png)
+
+__2.__ __Access the page in your browser by appending `/info.php` to the IP address or domain name.__
 ```
-http://18.209.18.61/info.php
+http://13.53.214.3/info.php
 ```
 ![PHP page](./images/php-page.png)
 
-After checking the relevant information about the server through this page, It’s best to remove the file created as it contains sensitive information about the PHP environment and the ubuntu server. It can always be recreated if the information is needed later.
+Once you've confirmed the server information, remove this file to prevent exposing sensitive details. You can recreate it later if necessary.
 ```
 sudo rm /var/www/projectLEMP/info.php
 ```
 
-## Step 6 - Retrieve Data from MySQL database with PHP
+## Step 6 - Retrieve Data from a MySQL Database Using PHP
 
-### Create a new user with the mysql_native_password authentication method in order to be able to connect to MySQL database from PHP.
+### Create a new user with the `mysql_native_password` authentication method to enable PHP to connect to the MySQL database.
 
-Create a database named todo_database and a user named todo_user
+First, create a database named `learn_database` and a user named `learn_user`.
 
-__1.__ __First, connect to the MySQL console using the root account.__
+__1.__ __Connect to the MySQL console as the root user.__
 ```
 sudo mysql -p
 ```
 ![MySQL console](./images/mysql-console.png)
 
-__2.__ __Create a new database__
+__2.__ __Create a new database.__
 ```
-CREATE DATABASE todo_database;
+CREATE DATABASE learn_database;
 ```
 ![Create database](./images/create-db.png)
 
-__3.__ __Create a new user and grant the user full privileges on the new database.__
+__3.__ __Create a new user and grant them full privileges on the database.__
 ```
-CREATE USER 'todo_user'@'%' IDENTIFIED WITH mysql_native_password BY 'Admin123$';
+CREATE USER 'learn_user'@'%' IDENTIFIED WITH mysql_native_password BY 'P@ssw0rd.1';
+```
 
-GRANT ALL ON todo_database.* TO 'todo_user'@'%';
 ```
+GRANT ALL ON learn_database.* TO 'learn_user'@'%';
+```
+This command grants all privileges (e.g., SELECT, INSERT, UPDATE) on all tables within the `learn_database` to the `learn_user` account, allowing connections from any host (`%`).
+
 ![Create user](./images/create-user-and-privilege.png)
 ```
 exit
 ```
-__4.__ __Login to MySQL console with the user custom credentials and confirm that you have access to todo_database.__
+__4.__ __Log in to the MySQL console using the new user's credentials and verify access to `learn_database`.__
 
 ```
-mysql -u todo_user -p
-
+mysql -u learn_user -p
+```
+```
 SHOW DATABASES;
 ```
 ![Show database](./images/show-db.png)
 
-The -p flag will prompt for password used when creating the example_user
+The `-p` flag prompts for the password you set when creating the `learn_user`.
 
-__5.__ __Create a test table named todo_list__.
+__5.__ __Create a test table named `learn_list`.__
 
-From MySQL console, run the following:
+In the MySQL console, run:
 ```
-CREATE TABLE todo_database.todo_list (
+CREATE TABLE learn_database.learn_list (
   item_id INT AUTO_INCREMENT,
   content VARCHAR(255),
   PRIMARY KEY(item_id)
 );
 ```
-__6.__ __Insert a few rows of content to the test table__.
+
+__6.__ __Insert some rows of data into the test table.__
 ```
-INSERT INTO todo_database.todo_list (content) VALUES ("My first important item");
+INSERT INTO learn_database.learn_list (content) VALUES ("My first important item");
 
-INSERT INTO todo_database.todo_list (content) VALUES ("My second important item");
-
-INSERT INTO todo_database.todo_list (content) VALUES ("My third important item");
-
-INSERT INTO todo_database.todo_list (content) VALUES ("and this one more thing");
+INSERT INTO learn_database.learn_list (content) VALUES ("My second important item");
 ```
 ![Insert rows](./images/insert-rows.png)
 
-__7.__ __To confirm that the data was successfully saved to the table run:__
+__7.__ __To verify that the data has been saved to the table, run:__
 ```
-SELECT * FROM todo_database.todo_list;
+SELECT * FROM learn_database.learn_list;
 ```
 ![Query table](./images/query-table.png)
 ```
 exit
 ```
 
-### Create a PHP script that will connect to MySQL and query the content.
+### Create a PHP Script to Connect to MySQL and Query Data
 
-__1.__ __Create a new PHP file in the custom web root directory__
+__1.__ __Create a new PHP file in the web root directory__
 ```
-sudo nano /var/www/projectLEMP/todo_list.php
+sudo nano /var/www/projectLEMP/learn_list.php
 ```
-The PHP script connects to MySQL database and queries for the content of the todo_list table, displays the results in a list. If there’s a problem with the database connection, it will throw an exception.
+This PHP script connects to the MySQL database, retrieves the content of the `learn_list` table, and displays the results in a list. If there's an issue with the database connection, it will throw an exception.
 
-Copy the content below into the todo_list.php script.
+Copy the code below into the `learn_list.php` file:
 ```
 <?php
-$user = "todo_user";
-$password = "Admin123$";
-$database = "todo_database";
-$table = "todo_list";
+$user = "learn_user";
+$password = "P@ssw0rd.1";
+$database = "learn_database";
+$table = "learn_list";
 
 try {
   $db = new PDO("mysql:host=localhost;dbname=$database", $user, $password);
-  echo "<h2>TODO</h2><ol>";
+  echo "<h2>learn</h2><ol>";
   foreach($db->query("SELECT content FROM $table") as $row) {
     echo "<li>" . $row['content'] . "</li>";
   }
@@ -413,33 +417,19 @@ try {
 ```
 ![PHP Script](./images/php-script.png)
 
-__2.__ __Now access this page on the browser by using the domain name or public IP address followed by /todo_list.php__
+__2.__ __Access this page in the browser using the domain name or public IP address followed by /learn_list.php__
 
 ```
-http://18.209.18.61/todo_list.php
-```
-![Error 502](./images/php-v-error.png)
-
-__When the PHP script queried the database there was an error "502 Bad Gateway" displayed on the browser. This is because the PHP version specified in the Nginx server configuration is php8.1 while the version of the PHP installed is php8.3__
-
-__This was troubleshooted by updating the Nginx server configuration with PHP version php8.3__
-
-![Updated server](./images/php-v-update.png)
-
-Ater updating the Nginx server, the URL was tested again on the browser and there no error.
-```
-http://18.209.18.61/todo_list.php
+http://13.53.214.3/learn_list.php
 ```
 
 ![Updated site](./images/php-site-ip.png)
 
-__Access this page on the browser by using the domain name followed by /todo_list.php__
+__Alternatively, access the page using your domain name followed by /learn_list.php__
 
-![Updated site with dns](./images/php-site-dns.png)
+![Updated site with DNS](./images/php-site-dns.png)
 
 
 ### Conclusion
 
-The LEMP stack provides a robust platform for hosting and serving web applications. By leveraging the power of Linux, Nginx, MySQL (or MariaDB), and PHP, developers can deploy scalable and reliable web solutions.
-
-
+The LEMP stack offers a powerful platform for hosting and serving web applications. By combining Linux, Nginx, MySQL (or MariaDB), and PHP, developers can build scalable and reliable web solutions.
