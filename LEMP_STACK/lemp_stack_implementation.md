@@ -29,7 +29,7 @@ ssh -i "henrylearndevops.pem" ubuntu@ec2-13-53-214-3.eu-north-1.compute.amazonaw
 
 In this command, __username=ubuntu__ and __public IP address=ec2-13-53-214-3.eu-north-1.compute.amazonaws.com__.
 
-![Connect to Instance](./images/ssh-access_gitbash.png)
+![Connect to Instance](./images/ssh_access_gitbash.png)
 
 
 ## Step 1 - Install Nginx Web Server
