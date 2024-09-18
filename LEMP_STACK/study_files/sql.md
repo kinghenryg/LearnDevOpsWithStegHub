@@ -102,16 +102,16 @@ SQL includes several commands for advanced data management and retrieval:
 Below are example screenshots illustrating SQL commands and their outputs:
 
 1. **Basic SELECT Query:**
-   ![SELECT Query Example](LEMP_STACK/images/query-table.png)
+   ![SELECT Query Example](/LEMP_STACK/images/query-table.png)
 
 2. **INSERT INTO Operation:**
-   ![INSERT Operation Example](LEMP_STACK/images/insert-rows.png)
+   ![INSERT Operation Example](/LEMP_STACK/images/insert-rows.png)
 
 3. **Table Creation and Structure:**
-   ![Table Creation Example](LEMP_STACK/images/table-creation.png)
+   ![Table Creation Example](/LEMP_STACK/images/table-creation.png)
    
 4. **Drop Table Operation:**
-   ![Drop Table Example](LEMP_STACK/images/drop_table.png)   
+   ![Drop Table Example](/LEMP_STACK/images/drop_table.png)   
    
    
 
