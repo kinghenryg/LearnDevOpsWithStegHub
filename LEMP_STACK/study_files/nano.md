@@ -12,7 +12,7 @@ nano henryfile.txt
 
 Replace `henryfile` with the actual name of the file you want to open. If the file does not exist, Nano will create a new file with the given name.
 
-![Opening File in Nano](./LEMP_STACK/images/nano-open-file.png)
+![Opening File in Nano](/LEMP_STACK/images/nano-open-file.png)
 
 ## Saving Changes
 
@@ -24,7 +24,7 @@ Ctrl + O
 
 A prompt will appear asking you to confirm the filename. Press `Enter` to keep the existing name, or type a new name followed by `Enter` to save under a different name.
 
-![Saving Changes in Nano](./LEMP_STACK/images/nano-save-changes.png)
+![Saving Changes in Nano](/LEMP_STACK/images/nano-save-changes.png)
 
 ## Exiting Nano
 
@@ -36,7 +36,7 @@ Ctrl + X
 
 If you have unsaved changes, Nano will prompt you to confirm if you want to save them before closing.
 
-![Exiting Nano](./LEMP_STACK/images/nano-exit.png)
+![Exiting Nano](/LEMP_STACK/images/nano-exit.png)
 
 ## Basic Navigation
 
@@ -62,19 +62,19 @@ Ctrl + W
 
 Enter the text you want to find and press `Enter` to begin the search.
 
-![Searching for Text in Nano](./LEMP_STACK/images/nano-search.png)
+![Searching for Text in Nano](/LEMP_STACK/images/nano-search.png)
 
 ## Additional Considerations
 
 - **Undo:** Nano does not have a comprehensive undo feature, but you can undo the most recent action with the `Alt + U` shortcut.
 - **Redo:** Nano currently does not support a built-in redo functionality.
 
-![Undo and Redo in Nano](./LEMP_STACK/images/nano-undo-redo.png)
+![Undo and Redo in Nano](/LEMP_STACK/images/nano-undo-redo.png)
 
 ## Conclusion
 
 Nano is a powerful and straightforward text editor that provides essential text editing capabilities within the terminal environment. Its user-friendly interface and basic commands make it an excellent tool for both new and experienced users. As you become more familiar with Nano, you may discover additional features and shortcuts to enhance your editing experience.
 
-![Overview of Nano](./LEMP_STACK/images/nano-overview.png)
+![Overview of Nano](/LEMP_STACK/images/nano-overview.png)
 
 For further learning, you can explore more about Nano through its [official documentation](https://nano-editor.org/docs.php).
