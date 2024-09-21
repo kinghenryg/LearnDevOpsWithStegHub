@@ -89,7 +89,7 @@ OODBMSs are experiencing renewed interest, particularly in fields leveraging mic
 - **ObjectDB**
 - **db4o**
 
-![OODBMS Structure](https://www.researchgate.net/profile/Dana-Vanier/publication/44055745/figure/fig1/AS:669046261420041@1536524467647/Object-Oriented-Database-Structure-or-Schema.png "Illustration of object-oriented database structures")
+![OODBMS Structure](\MERN_STACK\images\Object-Oriented-Database-Structure-or-Schema.png "Illustration of object-oriented database structures")
 
 ---
 
