@@ -31,7 +31,7 @@ Modern RDBMS platforms now integrate **Hybrid Transactional/Analytical Processin
 - **Microsoft SQL Server**
 - **Oracle Database**
 
-![RDBMS Table Example](https://www.researchgate.net/publication/316216480/figure/fig2/AS:484549902770179@1492537107959/example-of-relational-table.png "Illustration of relational database tables")
+![RDBMS Table Example](/MERN_STACK/images/example-of-relational-table.png "Illustration of relational database tables")
 
 ---
 
