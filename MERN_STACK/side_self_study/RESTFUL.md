@@ -46,7 +46,33 @@ RESTful APIs typically use **HTTP** to manage resources like data in databases, 
 
 ---
 
-## 2. Why Use RESTful APIs?
+## 2. Six Guiding Principles of REST
+
+RESTful APIs are built upon six guiding principles. These principles ensure that systems using REST are scalable, simple to use, and performant:
+
+1. **Client-Server Architecture**:
+    - REST relies on the separation of concerns between the client and the server. The client is responsible for managing the user interface and user experience, while the server handles data storage and processing.
+
+2. **Statelessness**:
+    - Each request from the client to the server must contain all the necessary information to understand and complete the request. No client state is stored on the server between requests.
+
+3. **Cacheability**:
+    - Responses from the server must be explicitly marked as cacheable or non-cacheable. When marked as cacheable, clients can reuse prior responses to reduce the number of interactions with the server, improving performance and scalability.
+
+4. **Uniform Interface**:
+    - The uniform interface simplifies communication between client and server by adhering to standard HTTP methods, URIs, and response formats. This principle allows different systems to interact with RESTful APIs in a consistent manner.
+
+5. **Layered System**:
+    - RESTful APIs may use intermediaries such as load balancers, proxies, or gateways between the client and the server. These intermediaries enhance scalability and security without disrupting the overall communication process.
+
+6. **Code on Demand (Optional)**:
+    - In some cases, servers can send executable code to the client (such as JavaScript) to extend the functionality of the application dynamically. This is the only optional principle of REST.
+
+These principles are designed to make RESTful APIs more flexible, scalable, and maintainable over time.
+
+---
+
+## 3. Why Use RESTful APIs?
 
 ### Simplicity
 RESTful APIs are easy to use and understand because they rely on well-known HTTP methods. They allow developers to interact with resources using a consistent and familiar approach.
@@ -62,7 +88,7 @@ RESTful APIs are designed to work seamlessly with web technologies, including br
 
 ---
 
-## 3. Use Cases of RESTful APIs
+## 4. Use Cases of RESTful APIs
 
 RESTful APIs are ubiquitous in web development and can be applied in various scenarios:
 
@@ -74,8 +100,8 @@ GET /users/5
 
 {
   "id": 5,
-  "name": "Alice",
-  "email": "alice@example.com"
+  "name": "Henry",
+  "email": "henrygdavies@gmail.com"
 }
 ```
 
@@ -90,7 +116,7 @@ In microservices architecture, RESTful APIs enable communication between individ
 
 ---
 
-## 4. Benefits of RESTful APIs
+## 5. Benefits of RESTful APIs
 
 RESTful APIs bring several advantages to web development:
 
@@ -110,7 +136,7 @@ RESTful APIs work over standard web protocols (HTTP/HTTPS), making them accessib
 
 ---
 
-## 5. REST vs SOAP
+## 6. REST vs SOAP
 
 RESTful APIs are often compared to SOAP (Simple Object Access Protocol), another popular protocol for building web services. Here's how they differ:
 
@@ -124,7 +150,7 @@ RESTful APIs are often compared to SOAP (Simple Object Access Protocol), another
 
 ---
 
-## 6. Challenges of RESTful APIs
+## 7. Challenges of RESTful APIs
 
 While RESTful APIs provide simplicity and flexibility, they also come with challenges:
 
