@@ -14,7 +14,7 @@ A **RESTful API** is an architectural style that enables interaction between sys
 
 RESTful APIs typically use **HTTP** to manage resources like data in databases, web services, and other back-end components.
 
-![REST API Architecture](https://restfulapi.net/wp-content/uploads/restful.png)
+![REST API Architecture](/MERN_STACK/images/restarchitecture.jpg)
 
 ---
 
