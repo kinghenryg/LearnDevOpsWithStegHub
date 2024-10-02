@@ -1,4 +1,3 @@
-
 # Network Diagnostic Tools: Ping and Traceroute
 
 ## Overview
@@ -25,7 +24,7 @@ For example:
 ping steghub.com
 ```
 
-![Ping StegHub Url](/images/ping_steghuburl.png)
+![Ping StegHub Url](/Client_Server_Architecture/images/ping_steghuburl.png)
 
 ### Understanding Ping Results
 
@@ -40,7 +39,7 @@ The output of a Ping command typically includes the following details:
    - **Packets**: Sent = x, Received = y, Lost = z (<percentage> loss): Provides an overview of packets sent, received, and lost, along with the percentage of loss.
    - **Approximate round-trip times**: Minimum = xms, Maximum = yms, Average = zms: Displays the round-trip time data.
 
-![PingOutput](/images/ping_steghuburl.png)
+![PingOutput](/Client_Server_Architecture/images/ping_steghuburl.png)
 
 ### Interpreting Ping Results
 
@@ -90,7 +89,7 @@ Example output:
 4    <time1> <time2> <time3> <Router_IP>
 ```
 
-![Tracert StegHub Output](/images/tracert.png)
+![Tracert StegHub Output](/Client_Server_Architecture/images/tracert.png)
 
 ### Interpreting Traceroute Results
 
