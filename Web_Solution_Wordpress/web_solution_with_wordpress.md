@@ -150,137 +150,175 @@
     sudo mkdir -p /home/recovery/logs
     ```
 
-#### Mount /var/www/html on apps-lv logical volume
+#### Mount `/var/www/html` on `apps-lv` Logical Volume
 ```bash
 sudo mount /dev/webdata-vg/apps-lv /var/www/html
 ```
 ![Mount apps-lv](./images/mount-applv.png)
 
-__12.__ __Use ```rsync``` utility to backup all the files in the log directory ```/var/log``` into ```/home/recovery/logs``` (This is required before mounting the file system)__
+12. **Backup logs using `rsync`**  
+    Use the `rsync` utility to back up all files in the log directory (`/var/log`) to `/home/recovery/logs` before mounting the new filesystem (since mounting will overwrite the existing data).
 
-```bash
-sudo rsync -av /var/log /home/recovery/logs
-```
-![Back logs](./images/back-logs.png)
+    ```bash
+    sudo rsync -av /var/log /home/recovery/logs
+    ```
 
-__13.__ __Mount ```/var/log``` on ```logs-lv``` logical volume (All existing data on /var/log is deleted with this mount process which was why the data was backed up)__
+    ![Backup logs](./images/back-logs.png)
 
-```bash
-sudo mount /dev/webdata-vg/logs-lv /var/log
-```
-![Mount logs-lv](./images/mount-logslv.png)
+13. **Mount `/var/log` on `logs-lv` Logical Volume**  
+    Mount the `/var/log` directory on `logs-lv`. The existing data in `/var/log` will be deleted during this process, which is why the logs were backed up.
 
-__14.__ __Restore log file back into ```/var/log``` directory__
-```bash
-sudo rsync -av /home/recovery/logs/log/ /var/log
-```
-![Restore backed files](./images/recover-logs.png)
+    ```bash
+    sudo mount /dev/webdata-vg/logs-lv /var/log
+    ```
 
-__15.__ __Update ```/etc/fstab``` file so that the mount configuration will persist after restart of the server__
+    ![Mount logs-lv](./images/mount-logslv.png)
 
-#### Get the ```UUID``` of the device and Update the ```/etc/fstab``` file with the format shown inside the file using the ```UUID```. Remember to remove the leading and ending quotes.
-```bash
-sudo blkid   # To fetch the UUID
+14. **Restore log files**  
+    Use `rsync` to restore the previously backed-up log files back to the `/var/log` directory.
 
-sudo vi /etc/fstab
-```
-![Update fstab](./images/update-fstab.png)
+    ```bash
+    sudo rsync -av /home/recovery/logs/log/ /var/log
+    ```
 
-__16.__ __Test the configuration and reload daemon. Verify the setup__
-```bash
-sudo mount -a   # Test the configuration
+    ![Restore logs](./images/recover-logs.png)
 
-sudo systemctl daemon-reload
+15. **Persist mount configuration**  
+    Update the `/etc/fstab` file so that the mount configuration persists after a server reboot.
 
-df -h   # Verifies the setup
-```
-![Verify setup](./images/verify-setup.png)
+    #### Get the UUID of the device and update `/etc/fstab`
+    Use the following command to fetch the UUID of the device and update the `/etc/fstab` file accordingly. Ensure that you remove any leading and ending quotes in the UUID.
 
+    ```bash
+    sudo blkid  # Fetch the UUID
+    sudo vi /etc/fstab
+    ```
+
+    ![Update fstab](./images/update-fstab.png)
+
+16. **Test the configuration**  
+    Test the new configuration and reload the daemon to apply the changes. Verify the setup with the `df -h` command.
+
+    ```bash
+    sudo mount -a  # Test the configuration
+    sudo systemctl daemon-reload  # Reload the daemon
+    df -h  # Verify the setup
+    ```
+
+    ![Verify setup](./images/verify-setup.png)
+
+---
 
 ## Step 2 - Prepare the Database Server
 
-### Launch a second RedHat EC2 instance that will have a role - ```DB Server```. Repeat the same steps as for the Web Server, but instead of ```apps-lv```, create ```dv-lv``` and mount it to ```/db``` directory.
+### Launch a second RedHat EC2 instance as the `DB Server`.  
+Repeat the same steps as the web server, but instead of creating `apps-lv`, create `db-lv` and mount it to the `/db` directory.
 
-__1.__ __Create 3 volumes in the same AZ as the ```DB Server``` ec2 each of 10GB and attache all 3 volumes one by one to the DB Server__.
+1. **Create 3 volumes (10GB each) in the same AZ as the `DB Server` EC2 instance, and attach them one by one to the DB server.**
 
-![Instance detail](./images/ec2-detail-db.png)
-![Instance detail](./images/security-rule-db.png)
-![DB volumes](./images/db-volume.png)
+    ![Instance detail](./images/ec2-detail-db.png)  
+    ![Security rule](./images/security-rule-db.png)  
+    ![DB volumes](./images/db-volume.png)
 
-__2.__ __Open up the Linux terminal to begin configuration__.
+2. **SSH into the DB server.**  
+    Access the server via SSH:
 
-```bash
-ssh -i "ec2key.pem" ec2-user@18.209.18.145
-```
-![DB ssh](./images/ssh-db.png)
+    ```bash
+    ssh -i "henrylearndevops.pem" ec2-user@ec2-54-242-78-13.compute-1.amazonaws.com
+    ```
 
-__3.__ __Use ```lsblk``` to inspect what block devices are attached to the server. Their name will likely be ```xvdf```, ```xvdg``` and ```xvdh```__.
+    ![DB SSH](./images/ssh-db.png)
 
-```bash
-lsblk
-```
-![List Block](./images/lsblk-db.png)
+3. **Inspect attached block devices.**  
+    Use the `lsblk` command to check the block devices attached to the server. They are likely named `xvdf`, `xvdg`, and `xvdh`.
 
-__4a.__ __Use ```gdisk``` utility to create a single partition on each of the 3 disks__.
+    ```bash
+    lsblk
+    ```
 
-```bash
-sudo gdisk /dev/xvdf
-```
-![partition](./images/f-part-db.png)
+    ![List block](./images/lsblk-db.png)
 
-```bash
-sudo gdisk /dev/xvdg
-```
-![partition](./images/g-part-db.png)
+4. **Partition the disks.**  
+    Use `gdisk` to create a single partition on each disk:
 
-```bash
-sudo gdisk /dev/xvdh
-```
-![partition](./images/h-part-db.png)
+    - For `/dev/xvdf`:
 
-__4b.__ __Use ```lsblk``` utility to view the newly configured partitions on each of the 3 disks
-```bash
-lsblk
-```
-![View partitions](./images/lsblk2-db.png)
+      ```bash
+      sudo gdisk /dev/xvdf
+      ```
 
-__5.__ __Install ```lvm``` package__
-```bash
-sudo yum install lvm2 -y
-```
-![Install lvm](./images/install-lvm-db.png)
+      ![Partition xvdf](./images/f-part-db.png)
 
-__6.__ __Use ```pvcreate``` utility to mark each of the 3 dicks as physical volumes (PVs) to be used by LVM. Also, use ```vgcreate``` utility to add all 3 PVs to a volume group (VG). Name the VG ```database-vg```. Verify that each of the volumes and the VG have been created successfully__.
-```bash
-sudo pvcreate /dev/xvdf1 /dev/xvdg1 /dev/xvdh1
-sudo pvs
-```
-```bash
-sudo vgcreate database-vg /dev/xvdf1 /dev/xvdg1 /dev/xvdh1
-sudo vgs
-```
-![PVs and VG](./images/pv-vg-db.png)
+    - For `/dev/xvdg`:
 
-__7.__ __Use ```lvcreate``` utility to create a logical volume, ```db-lv``` (__Use 20G of the PV size since it is the only LV to be created__). Verify that the logical volumes have been created successfully__.
+      ```bash
+      sudo gdisk /dev/xvdg
+      ```
 
-```bash
-sudo lvcreate -n db-lv -L 20G database-vg
+      ![Partition xvdg](./images/g-part-db.png)
 
-sudo lvs
-```
-![LV](./images/lv-create-db.png)
+    - For `/dev/xvdh`:
 
-__8.__ __Use ```mkfs.ext4``` to format the logical volumes with ext4 filesystem and monut ```/db``` on ```db-lv```__
+      ```bash
+      sudo gdisk /dev/xvdh
+      ```
 
-```bash
-sudo mkfs.ext4 /dev/database-vg/db-lv
-```
-```bash
-sudo mount /dev/database-vg/db-lv /db
-```
-![filesystem](./images/mkfs-db-lv.png)
+      ![Partition xvdh](./images/h-part-db.png)
 
-__9.__ __Update ```/etc/fstab``` file so that the mount configuration will persist after restart of the server__
+5. **View the partitions.**  
+    Use `lsblk` to verify the newly created partitions on each disk.
+
+    ```bash
+    lsblk
+    ```
+
+    ![View partitions](./images/lsblk2-db.png)
+
+6. **Install LVM.**  
+    Install the LVM package using `yum`.
+
+    ```bash
+    sudo yum install lvm2 -y
+    ```
+
+    ![Install LVM](./images/install-lvm-db.png)
+
+7. **Create Physical Volumes and a Volume Group.**  
+    Use `pvcreate` to mark the disks as physical volumes (PVs) and `vgcreate` to create a volume group (VG) named `database-vg`. Verify the creation using `pvs` and `vgs`.
+
+    ```bash
+    sudo pvcreate /dev/xvdf1 /dev/xvdg1 /dev/xvdh1
+    sudo pvs
+    sudo vgcreate database-vg /dev/xvdf1 /dev/xvdg1 /dev/xvdh1
+    sudo vgs
+    ```
+
+    ![PVs and VG](./images/pv-vg-db.png)
+
+8. **Create a Logical Volume.**  
+    Use `lvcreate` to create a logical volume named `db-lv`, using 20GB of space (as it's the only LV to be created). Verify the setup with `lvs`.
+
+    ```bash
+    sudo lvcreate -n db-lv -L 20G database-vg
+    sudo lvs
+    ```
+
+    ![LV](./images/lv-create-db.png)
+
+9. **Format and mount the logical volume.**  
+    Use `mkfs.ext4` to format the logical volume, and then mount `/db` on `db-lv`.
+
+    ```bash
+    sudo mkfs.ext4 /dev/database-vg/db-lv
+    sudo mount /dev/database-vg/db-lv /db
+    ```
+
+    ![Filesystem](./images/mkfs-db-lv.png)
+
+10. **Update `/etc/fstab` for persistence.**  
+    Ensure the mount configuration is added to `/etc/fstab` so it persists after a reboot.
+
+
 
 #### Get the ```UUID``` of the device
 
