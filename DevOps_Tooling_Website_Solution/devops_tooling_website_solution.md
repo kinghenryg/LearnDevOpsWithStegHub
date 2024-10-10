@@ -313,11 +313,11 @@ Add the following line:
 
 ```bash
 sudo yum install httpd -y
-sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y
+sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-9.rpm -y
 sudo dnf module reset php
-sudo dnf module enable php:remi-8.2
-sudo dnf install php php-opcache php-gd php-curl php-mysqlnd
+sudo dnf module enable php:remi-8.2 -y
+sudo dnf install php php-opcache php-gd php-curl php-mysqlnd -y
 ```
 
 
@@ -375,7 +375,7 @@ Install Git and clone the forked repository to `/var/www/html`.
 
 
 ```bash
-sudo yum install git
+sudo yum install git -y
 sudo git clone https://github.com/kinghenryg/tooling.git
 ```
 
@@ -404,6 +404,8 @@ SELINUX=disabled
 sudo systemctl restart httpd
 ```
 ![disable selinux](./images/disable-selinux.png)
+
+Repeat similar steps on Web Server 2 and 3 to confirm the website is accessible.
 
 **10. Update Website Configuration for MySQL Database**  
 Modify the `functions.php` file to connect to the MySQL database, and import the database schema using `tooling-db.sql`.
