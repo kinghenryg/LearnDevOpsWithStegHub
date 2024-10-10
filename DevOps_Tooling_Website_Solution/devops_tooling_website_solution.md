@@ -444,6 +444,12 @@ Open a browser and visit the public IP of the web server. Log in with the `myuse
 
 Repeat similar steps on Web Server 2 and 3 to confirm the website is accessible.
 
+> Output for Web Server 2
+![Website  Server2](./images/tooling-site2.png)
+
+>Output for Webserver 3
+![Website  Server2](./images/tooling-site3.png)
+
 
 
 
