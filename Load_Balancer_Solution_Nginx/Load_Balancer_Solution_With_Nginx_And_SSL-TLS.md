@@ -102,7 +102,7 @@ To obtain a valid SSL certificate, register a domain with a registrar like [GoDa
 
 - Verify the DNS record with [DNS Checker](https://dnschecker.org/#A/toolingsolutions.ignorelist.com).
 
-![DNS Checker](./images/dns-checkeR.png)
+![DNS Checker](./images/dns-checker.png)
 
 ### Step 4: Update Nginx with Your Domain Name
 - Update `nginx.conf` to reflect your domain.
